@@ -9,6 +9,8 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import CustomerDashboard from "./pages/customer/CustomerDashboard";
 import BookDelivery from "./pages/customer/BookDelivery";
+import BookingDetails from "./pages/customer/BookingDetails";
+
 import DriverDashboard from "./pages/driver/DriverDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
@@ -17,15 +19,19 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
   return (
     <Routes>
+      {/* Public pages */}
       <Route path="/" element={<Home />} />
 
+      {/* Authentication */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+
       <Route
         path="/forgot-password"
         element={<ForgotPassword />}
       />
 
+      {/* Customer dashboard */}
       <Route
         path="/customer"
         element={
@@ -35,6 +41,7 @@ function App() {
         }
       />
 
+      {/* Create a booking */}
       <Route
         path="/customer/book"
         element={
@@ -44,6 +51,17 @@ function App() {
         }
       />
 
+      {/* Booking confirmation and details */}
+      <Route
+        path="/customer/orders/:id"
+        element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <BookingDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Driver dashboard */}
       <Route
         path="/driver"
         element={
@@ -53,6 +71,7 @@ function App() {
         }
       />
 
+      {/* Admin dashboard */}
       <Route
         path="/admin"
         element={
@@ -62,6 +81,7 @@ function App() {
         }
       />
 
+      {/* Fallback */}
       <Route path="*" element={<Home />} />
     </Routes>
   );
