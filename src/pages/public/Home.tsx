@@ -1,286 +1,703 @@
-import { motion } from "motion/react";
+import { useState, type CSSProperties } from "react";
+
+import { Link } from "react-router";
+
 import {
+
   ArrowRight,
-  MapPin,
-  Truck,
-  Package,
-  ShieldCheck,
+
+  BadgeCheck,
+
+  CheckCircle2,
+
   Clock3,
+
+  Menu,
+
+  Package,
+
+  MapPin,
+
+  Route,
+
+  ShieldCheck,
+
+  Truck,
+
+  Wallet,
+
+  X,
+
+  Zap,
+
 } from "lucide-react";
 
-const Home = () => {
+
+
+import truckImage from "../../assets/logigo-truck.webp";
+
+import "./Home.css";
+
+
+
+function TruckScene({ compact = false }: { compact?: boolean }) {
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#07111f] text-white">
-      {/* Navbar */}
-      <header className="border-b border-white/10 bg-[#07111f]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500">
-              <Truck className="h-5 w-5" />
-            </div>
 
-            <div>
-              <h1 className="text-lg font-black">LogiGo</h1>
-              <p className="text-[9px] uppercase tracking-[0.25em] text-slate-500">
-                Logistics
-              </p>
-            </div>
-          </div>
+    <div
 
-          <div className="hidden items-center gap-8 text-sm text-slate-300 md:flex">
-            <a href="#services" className="hover:text-white">
-              Services
-            </a>
+      className={`lg-truck-scene${compact ? " lg-truck-scene--compact" : ""}`}
 
-            <a href="#how-it-works" className="hover:text-white">
-              How it Works
-            </a>
+      aria-label="LogiGo delivery truck illustration"
 
-            <a href="#why-logigo" className="hover:text-white">
-              Why LogiGo
-            </a>
-          </div>
+    >
 
-          <button className="rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-bold transition hover:bg-orange-400">
-            Book Now
-          </button>
+      <div className="lg-scene-glow" aria-hidden="true" />
+
+      <div className="lg-scene-label">
+
+        <span className="lg-live-dot" />
+
+        SMARTER LOGISTICS
+
+      </div>
+
+
+
+      <div className="lg-route-tag lg-pickup-tag">
+
+        <span className="lg-tag-icon lg-tag-green"><MapPin size={17} /></span>
+
+        <span><small>PICKUP</small><strong>Starting point</strong></span>
+
+      </div>
+
+
+
+      <div className="lg-route-tag lg-drop-tag">
+
+        <span className="lg-tag-icon lg-tag-orange"><MapPin size={17} /></span>
+
+        <span><small>DESTINATION</small><strong>Drop-off</strong></span>
+
+      </div>
+
+
+
+      <svg className="lg-route-art" viewBox="0 0 640 300" preserveAspectRatio="none" aria-hidden="true">
+
+        <path className="lg-route-shadow" d="M-25 160 C70 68 145 245 250 170 S380 82 462 170 S570 225 665 104" />
+
+        <path className="lg-route-line" d="M-25 160 C70 68 145 245 250 170 S380 82 462 170 S570 225 665 104" />
+
+      </svg>
+
+
+
+      <div className="lg-truck-motion" aria-hidden="true">
+
+        <img className="lg-real-truck" src={truckImage} alt="" />
+
+      </div>
+
+
+
+      <div className="lg-road-base" aria-hidden="true">
+
+        <div className="lg-road-dashes" />
+
+      </div>
+
+
+
+      <div className="lg-delivery-float">
+
+        <div className="lg-float-icon"><ShieldCheck size={19} /></div>
+
+        <div className="lg-float-copy">
+
+          <span>THE LOGIGO WAY</span>
+
+          <strong>Simple. Clear. Reliable.</strong>
+
+          <div className="lg-float-track"><span /></div>
+
         </div>
+
+        <CheckCircle2 className="lg-float-check" size={18} />
+
+      </div>
+
+
+
+      <div className="lg-scene-bottom">
+
+        <span><span className="lg-bottom-dot" /> Delivery made simpler</span>
+
+        <span>Pickup <ArrowRight size={13} /> Destination</span>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+
+const services = [
+
+  {
+
+    title: "Mini Truck",
+
+    category: "SMALL MOVES",
+
+    description: "A practical choice for boxes, small household moves and local deliveries.",
+
+    icon: Package,
+
+    className: "lg-service-orange",
+
+  },
+
+  {
+
+    title: "Pickup Truck",
+
+    category: "BUSINESS DELIVERIES",
+
+    description: "Move furniture, business supplies and medium-sized loads with ease.",
+
+    icon: Truck,
+
+    className: "lg-service-blue",
+
+  },
+
+  {
+
+    title: "Large Truck",
+
+    category: "HEAVY TRANSPORT",
+
+    description: "For larger consignments and bulk transportation requirements.",
+
+    icon: Route,
+
+    className: "lg-service-green",
+
+  },
+
+];
+
+
+
+const benefits = [
+
+  {
+
+    title: "Transparent estimates",
+
+    description: "Review the estimated price before you confirm your booking.",
+
+    icon: Wallet,
+
+    className: "lg-benefit-icon-orange",
+
+  },
+
+  {
+
+    title: "Clear delivery updates",
+
+    description: "Follow booking progress from assignment through to delivery.",
+
+    icon: Route,
+
+    className: "lg-benefit-icon-blue",
+
+  },
+
+  {
+
+    title: "Vehicles for your needs",
+
+    description: "Choose a suitable vehicle for the size and weight of your load.",
+
+    icon: Clock3,
+
+    className: "lg-benefit-icon-green",
+
+  },
+
+];
+
+
+
+function Home() {
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
+
+
+  return (
+
+    <div className="lg-home">
+      <a className="lg-skip-link" href="#main-content">Skip to main content</a>
+
+      <div className="lg-announcement">
+
+        <Zap size={14} aria-hidden="true" />
+
+        <span>Smarter moves start here.</span>
+
+        <span className="lg-announcement-divider" aria-hidden="true" />
+
+        <span className="lg-announcement-extra">Book, move and deliver with LogiGo.</span>
+
+      </div>
+
+
+
+      <header className="lg-header">
+
+        <div className="lg-header-inner">
+
+          <Link to="/" className="lg-brand" onClick={closeMenu} aria-label="LogiGo home">
+
+            <span className="lg-brand-mark"><Truck size={24} strokeWidth={2.2} /></span>
+
+            <span className="lg-brand-copy">
+
+              <strong>LogiGo</strong>
+
+              <small>LOGISTICS, SIMPLIFIED</small>
+
+            </span>
+
+          </Link>
+
+
+
+          <nav id="lg-main-nav" className={`lg-nav${menuOpen ? " lg-nav-open" : ""}`} aria-label="Main navigation">
+
+            <a href="#services" onClick={closeMenu}>Services</a>
+
+            <a href="#how-it-works" onClick={closeMenu}>How it works</a>
+
+            <a href="#why-logigo" onClick={closeMenu}>Why LogiGo</a>
+
+            <div className="lg-mobile-nav-actions">
+
+              <Link to="/login" className="lg-mobile-login" onClick={closeMenu}>Log in</Link>
+
+              <Link to="/customer/book" className="lg-btn lg-btn-primary" onClick={closeMenu}>
+
+                Book a delivery <ArrowRight size={16} />
+
+              </Link>
+
+            </div>
+
+          </nav>
+
+
+
+          <div className="lg-header-actions">
+
+            <Link to="/login" className="lg-login-link">Log in</Link>
+
+            <Link to="/customer/book" className="lg-btn lg-btn-primary lg-nav-book">
+
+              Book a delivery <ArrowRight size={16} />
+
+            </Link>
+
+          </div>
+
+
+
+          <button
+
+            type="button"
+
+            className="lg-menu-toggle"
+
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+
+            aria-expanded={menuOpen}
+            aria-controls="lg-main-nav"
+
+            onClick={() => setMenuOpen((current) => !current)}
+
+          >
+
+            {menuOpen ? <X size={23} /> : <Menu size={23} />}
+
+          </button>
+
+        </div>
+
       </header>
 
-      {/* Hero */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(249,115,22,0.12),transparent_30%),radial-gradient(circle_at_80%_30%,rgba(59,130,246,0.10),transparent_30%)]" />
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 py-16 lg:grid-cols-2 lg:px-8 lg:py-24">
-          {/* Left */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-400/20 bg-orange-400/10 px-3 py-1.5 text-xs font-bold text-orange-300">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-orange-400" />
-              On-demand delivery
-            </div>
 
-            <h2 className="max-w-2xl text-5xl font-black leading-[1] tracking-tight sm:text-6xl lg:text-7xl">
-              Move anything.
-              <span className="block text-orange-400">Anywhere.</span>
-            </h2>
+      <main id="main-content">
 
-            <p className="mt-6 max-w-xl text-base leading-7 text-slate-400 sm:text-lg">
-              Book a vehicle, choose your route, get an estimated fare, and
-              track your delivery from pickup to destination.
-            </p>
+        <section className="lg-hero">
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button className="group flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-6 py-4 font-bold shadow-xl shadow-orange-500/20 transition hover:-translate-y-1 hover:bg-orange-400">
-                Start Booking
-                <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
-              </button>
+          <div className="lg-hero-orb lg-hero-orb-one" aria-hidden="true" />
 
-              <button className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 font-bold text-slate-200 transition hover:bg-white/[0.07]">
-                Explore Services
-              </button>
-            </div>
-          </motion.div>
+          <div className="lg-hero-orb lg-hero-orb-two" aria-hidden="true" />
 
-          {/* Animation */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-            className="relative"
-          >
-            <div className="relative h-[420px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#0c1728] shadow-2xl">
-              {/* Route */}
-              <svg
-                className="absolute inset-0 h-full w-full"
-                viewBox="0 0 700 420"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M80 100 C200 30, 260 230, 370 150 C470 80, 520 300, 620 270"
-                  fill="none"
-                  stroke="rgba(249,115,22,0.2)"
-                  strokeWidth="15"
-                  strokeLinecap="round"
-                />
+          <div className="lg-container lg-hero-grid">
 
-                <path
-                  d="M80 100 C200 30, 260 230, 370 150 C470 80, 520 300, 620 270"
-                  fill="none"
-                  stroke="#fb923c"
-                  strokeWidth="4"
-                  strokeDasharray="12 12"
-                  strokeLinecap="round"
-                />
-              </svg>
+            <div className="lg-hero-copy">
 
-              {/* Pickup */}
-              <div className="absolute left-6 top-10 flex items-center gap-2 rounded-full bg-slate-950/90 px-3 py-2">
-                <MapPin className="h-4 w-4 text-emerald-400" />
-                <span className="text-xs font-bold">Pickup</span>
+              <div className="lg-eyebrow"><span className="lg-eyebrow-pulse" /> ON-DEMAND TRANSPORTATION</div>
+
+              <h1>Move anything.<br /><span>Anywhere.</span></h1>
+
+              <p className="lg-hero-description">
+
+                From everyday deliveries to larger moves, get the right vehicle,
+
+                review your estimated fare and follow your delivery journey with LogiGo.
+
+              </p>
+
+              <div className="lg-hero-actions">
+
+                <Link to="/customer/book" className="lg-btn lg-btn-primary lg-btn-large">
+
+                  Start booking <ArrowRight size={18} />
+
+                </Link>
+
+                <a href="#services" className="lg-btn lg-btn-secondary lg-btn-large">Explore services</a>
+
               </div>
 
-              {/* Drop */}
-              <div className="absolute bottom-36 right-6 flex items-center gap-2 rounded-full bg-slate-950/90 px-3 py-2">
-                <MapPin className="h-4 w-4 text-orange-400" />
-                <span className="text-xs font-bold">Drop</span>
+
+
+              <div className="lg-trust-row">
+
+                <div className="lg-trust-item">
+
+                  <span className="lg-trust-icon"><CheckCircle2 size={17} /></span>
+
+                  <span><strong>Simple booking</strong><small>Clear steps, no clutter</small></span>
+
+                </div>
+
+                <div className="lg-trust-item">
+
+                  <span className="lg-trust-icon lg-trust-icon-green"><BadgeCheck size={17} /></span>
+
+                  <span><strong>Fare transparency</strong><small>Know before you confirm</small></span>
+
+                </div>
+
               </div>
 
-              {/* Truck */}
-              <motion.div
-                className="absolute left-10 top-24"
-                animate={{
-                  x: [0, 130, 270, 430],
-                  y: [0, 80, 25, 75],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <div className="rounded-2xl bg-orange-500 p-3 shadow-xl shadow-orange-500/30">
-                  <Truck className="h-7 w-7" />
-                </div>
-              </motion.div>
-
-              {/* Road */}
-              <div className="absolute bottom-0 left-0 right-0 h-24 overflow-hidden border-t border-white/10 bg-[#111827]">
-                <div className="road-lines absolute inset-0" />
-              </div>
-
-              {/* Info Card */}
-              <motion.div
-                animate={{ y: [0, -7, 0] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="absolute right-5 top-5 w-48 rounded-2xl border border-white/10 bg-black/50 p-4 backdrop-blur-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="rounded-xl bg-emerald-400/10 p-2">
-                    <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                  </div>
-
-                  <div>
-                    <p className="text-xs font-bold">Driver matched</p>
-                    <p className="text-[10px] text-slate-500">
-                      Almost ready
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <motion.div
-                    animate={{
-                      width: ["20%", "85%", "20%"],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                    }}
-                    className="h-full rounded-full bg-orange-400"
-                  />
-                </div>
-              </motion.div>
             </div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* Services */}
-      <section id="services" className="border-y border-white/5">
-        <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-400">
-            Services
-          </p>
 
-          <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-            Built for every kind of move.
-          </h2>
 
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {[
-              {
-                icon: Package,
-                title: "Parcel Delivery",
-                text: "Fast and reliable movement of packages.",
-              },
-              {
-                icon: Truck,
-                title: "Mini Truck",
-                text: "Perfect for household and business goods.",
-              },
-              {
-                icon: Clock3,
-                title: "On-Demand",
-                text: "Book transportation whenever you need it.",
-              },
-            ].map((service) => {
-              const Icon = service.icon;
+            <div className="lg-hero-visual">
+
+              <TruckScene />
+
+              <div className="lg-visual-caption">
+
+                <span className="lg-caption-mark"><Route size={15} /></span>
+
+                <span>Every delivery has a journey.</span>
+
+                <ArrowRight size={15} className="lg-caption-arrow" />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="lg-container lg-hero-bottom">
+
+            <span className="lg-hero-bottom-rule" />
+
+            <span>ONE PLATFORM. MULTIPLE WAYS TO MOVE.</span>
+
+            <span className="lg-hero-bottom-rule" />
+
+          </div>
+
+        </section>
+
+
+
+        <section className="lg-benefits-strip" id="why-logigo">
+
+          <div className="lg-container lg-benefits-grid">
+
+            {benefits.map((benefit) => {
+
+              const Icon = benefit.icon;
 
               return (
-                <div
-                  key={service.title}
-                  className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 transition hover:-translate-y-1 hover:border-orange-400/30"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500/10">
-                    <Icon className="h-6 w-6 text-orange-400" />
-                  </div>
 
-                  <h3 className="mt-6 text-xl font-bold">
-                    {service.title}
-                  </h3>
+                <article className="lg-benefit" key={benefit.title}>
 
-                  <p className="mt-3 text-sm leading-6 text-slate-400">
-                    {service.text}
-                  </p>
-                </div>
+                  <span className={`lg-benefit-icon ${benefit.className}`}><Icon size={21} /></span>
+
+                  <span className="lg-benefit-copy">
+
+                    <strong>{benefit.title}</strong>
+
+                    <small>{benefit.description}</small>
+
+                  </span>
+
+                </article>
+
               );
+
             })}
+
           </div>
-        </div>
-      </section>
 
-      <section
-        id="how-it-works"
-        className="mx-auto max-w-7xl px-5 py-20 lg:px-8"
-      >
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-400">
-          Simple process
-        </p>
+        </section>
 
-        <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-          Book in four simple steps.
-        </h2>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-4">
-          {[
-            "Enter pickup",
-            "Enter drop",
-            "Choose vehicle",
-            "Track delivery",
-          ].map((step, index) => (
-            <div
-              key={step}
-              className="rounded-2xl border border-white/10 bg-slate-900/50 p-5"
-            >
-              <div className="text-sm font-black text-orange-400">
-                0{index + 1}
+
+        <section className="lg-section lg-services" id="services">
+
+          <div className="lg-container">
+
+            <div className="lg-section-heading">
+
+              <div className="lg-heading-copy">
+
+                <div className="lg-eyebrow"><span className="lg-eyebrow-pulse" /> FIND YOUR FIT</div>
+
+                <h2>The right ride for<br className="lg-desktop-break" /> every kind of move.</h2>
+
+                <p>Small parcels, home essentials or heavier loads. Choose a vehicle that fits your delivery.</p>
+
               </div>
 
-              <h3 className="mt-4 font-bold">{step}</h3>
+              <Link to="/customer/book" className="lg-text-link">
+
+                View booking options <ArrowRight size={16} />
+
+              </Link>
+
             </div>
-          ))}
+
+
+
+            <div className="lg-service-grid">
+
+              {services.map((service, index) => {
+
+                const Icon = service.icon;
+
+                return (
+
+                  <article
+
+                    className="lg-service-card"
+
+                    key={service.title}
+
+                    style={{ "--service-index": index } as CSSProperties}
+
+                  >
+
+                    <div className="lg-service-card-top">
+
+                      <span className={`lg-service-icon ${service.className}`}><Icon size={24} /></span>
+
+                      <span className="lg-service-number">0{index + 1}</span>
+
+                    </div>
+
+                    <span className="lg-service-category">{service.category}</span>
+
+                    <h3>{service.title}</h3>
+
+                    <p>{service.description}</p>
+
+                    <Link to="/customer/book" className="lg-service-link">
+
+                      Choose this vehicle <ArrowRight size={16} />
+
+                    </Link>
+
+                  </article>
+
+                );
+
+              })}
+
+            </div>
+
+
+
+            <p className="lg-service-note">
+
+              <ShieldCheck size={16} />
+
+              Final vehicle options and rates are loaded from the live LogiGo catalog during booking.
+
+            </p>
+
+          </div>
+
+        </section>
+
+
+
+        <section className="lg-section lg-how" id="how-it-works">
+
+          <div className="lg-container">
+
+            <div className="lg-centered-heading">
+
+              <div className="lg-eyebrow"><span className="lg-eyebrow-pulse" /> YOUR DELIVERY, MADE SIMPLE</div>
+
+              <h2>Three steps.<br className="lg-mobile-break" /> <span>One smooth journey.</span></h2>
+
+              <p>A clear process from entering your addresses to completing your delivery.</p>
+
+            </div>
+
+
+
+            <div className="lg-how-grid">
+
+              <span className="lg-how-connector" aria-hidden="true" />
+
+              <article className="lg-how-card">
+
+                <div className="lg-how-card-head"><span className="lg-how-number">01</span><span className="lg-how-icon"><MapPin size={22} /></span></div>
+
+                <h3>Set your route</h3>
+
+                <p>Enter your pickup and drop-off locations and tell us what you need to move.</p>
+
+              </article>
+
+              <article className="lg-how-card">
+
+                <div className="lg-how-card-head"><span className="lg-how-number">02</span><span className="lg-how-icon lg-how-icon-orange"><Truck size={22} /></span></div>
+
+                <h3>Choose your vehicle</h3>
+
+                <p>Compare suitable vehicle options and review the estimated fare before confirming.</p>
+
+              </article>
+
+              <article className="lg-how-card">
+
+                <div className="lg-how-card-head"><span className="lg-how-number">03</span><span className="lg-how-icon lg-how-icon-green"><CheckCircle2 size={22} /></span></div>
+
+                <h3>Follow your delivery</h3>
+
+                <p>Follow booking status and view assigned driver details when available.</p>
+
+              </article>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+
+        <section className="lg-container lg-final-cta">
+
+          <div className="lg-cta-decoration lg-cta-decoration-one" aria-hidden="true" />
+
+          <div className="lg-cta-decoration lg-cta-decoration-two" aria-hidden="true" />
+
+          <div className="lg-cta-content">
+
+            <span className="lg-cta-kicker"><Truck size={15} /> YOUR NEXT MOVE STARTS HERE</span>
+
+            <h2>Ready to get<br /><span>things moving?</span></h2>
+
+            <p>Set your route, find the right vehicle and plan your delivery with LogiGo.</p>
+
+            <Link to="/customer/book" className="lg-btn lg-btn-white lg-btn-large">
+
+              Book your delivery <ArrowRight size={18} />
+
+            </Link>
+
+          </div>
+
+          <div className="lg-cta-truck"><TruckScene compact /></div>
+
+        </section>
+
+      </main>
+
+
+
+      <footer className="lg-footer">
+
+        <div className="lg-container">
+
+          <div className="lg-footer-main">
+
+            <Link to="/" className="lg-brand" aria-label="LogiGo home">
+
+              <span className="lg-brand-mark"><Truck size={23} /></span>
+
+              <span className="lg-brand-copy"><strong>LogiGo</strong><small>LOGISTICS, SIMPLIFIED</small></span>
+
+            </Link>
+
+            <p>Moving your world, one delivery at a time.</p>
+
+            <div className="lg-footer-links">
+
+              <a href="#services">Services</a>
+
+              <a href="#how-it-works">How it works</a>
+
+              <Link to="/login">Log in</Link>
+
+              <Link to="/register">Create account</Link>
+
+            </div>
+
+          </div>
+
+          <div className="lg-footer-bottom">
+
+            <span>© {new Date().getFullYear()} LogiGo. All rights reserved.</span>
+
+            <span>Built to keep your deliveries moving.</span>
+
+          </div>
+
         </div>
-      </section>
+
+      </footer>
+
     </div>
+
   );
-};
+
+}
+
+
 
 export default Home;
